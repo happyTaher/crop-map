@@ -141,6 +141,11 @@ function mountApp(data: MatchaData): void {
     includeUnpriced: true,
   };
 
+  let openId: string | null = null;
+  popup.on('close', () => {
+    openId = null;
+  });
+
   /** Moves the shop into the part of the map the panel doesn't cover, leaving room above it for the popup. */
   const open = (shop: MatchaShop, fly: boolean): void => {
     const center: [number, number] = [shop.lng, shop.lat];
@@ -162,6 +167,7 @@ function mountApp(data: MatchaData): void {
     if (fly) map.flyTo({ center, offset, zoom: Math.max(map.getZoom(), 14.5) });
     else if (!clear) map.easeTo({ center, offset });
     popup.setLngLat(center).setDOMContent(shopCard(shop, data.item)).addTo(map);
+    openId = shop.id;
   };
 
   const markers = new Map<string, { marker: maplibregl.Marker; pin: HTMLButtonElement }>();
@@ -242,6 +248,7 @@ function mountApp(data: MatchaData): void {
     const visible = sortByPrice(data.shops.filter((s) => matchesFilters(s, filters)));
     const shown = new Set(visible.map((s) => s.id));
     for (const [id, { pin }] of markers) pin.hidden = !shown.has(id);
+    if (openId !== null && !shown.has(openId)) popup.remove();
     count.textContent = `${visible.length} of ${data.shops.length} spots, cheapest first`;
     list.replaceChildren(
       ...visible.map((shop) => {
