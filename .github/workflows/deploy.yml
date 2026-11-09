@@ -1,6 +1,6 @@
 name: Deploy
 
-# main deploys to production (crops.sabhyachhabria.com); any other branch gets a preview at <branch>.<project>.pages.dev.
+# Deploy this fork to its configured Cloudflare Pages project; branches receive previews.
 on:
   push:
   workflow_dispatch:
@@ -32,11 +32,6 @@ jobs:
           cache-dependency-path: site/package-lock.json
       - run: npm ci
       - run: npm run build
-        env:
-          VITE_BASEMAP_URL: ${{ vars.TILES_BASE }}/basemap.pmtiles
-          VITE_FIELDS_URL: ${{ vars.TILES_BASE }}/fields.pmtiles
-          VITE_OVERVIEW_URL: ${{ vars.TILES_BASE }}/overview.pmtiles
-          VITE_FIELDS_LOW_URL: ${{ vars.TILES_BASE }}/fields-low.pmtiles
       - name: Deploy to Cloudflare Pages
         run: npx --yes wrangler@4 pages deploy dist --project-name "${{ vars.PAGES_PROJECT }}" --branch "${{ github.ref_name }}" --commit-hash "${{ github.sha }}"
         env:

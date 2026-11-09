@@ -1,4 +1,4 @@
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import { frameInstant, solveFrame, type FramePadding } from './lib/frame';
 import { buildBasemapStyle } from './style/basemap';

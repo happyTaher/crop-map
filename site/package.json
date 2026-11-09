@@ -1,5 +1,5 @@
 {
-  "name": "ca-crop-map-site",
+  "name": "matcha-in-sf",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -7,11 +7,12 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:ui": "node scripts/check-matcha.mjs"
   },
   "dependencies": {
     "@protomaps/basemaps": "^5.7.2",
-    "maplibre-gl": "^5.24.0",
+    "maplibre-gl": "^6.17.0",
     "pmtiles": "^4.5.0",
     "topojson-client": "^3.1.0"
   },
