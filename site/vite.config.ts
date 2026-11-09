@@ -4,6 +4,7 @@ import { defineConfig, loadEnv, type Plugin } from 'vite';
 
 const DEFAULT_TERRAIN_URL = 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png';
 const BOOT_FETCHES = ['/data/crops.json', '/data/regions.json', '/icons/manifest.json'];
+const MATCHA_BOOT_FETCHES = ['/data/matcha.json'];
 
 const excludePmtilesFromDist = (): Plugin => {
   let dataDir = '';
@@ -25,7 +26,8 @@ const excludePmtilesFromDist = (): Plugin => {
 /** Opens connections to the tile and terrain hosts, and starts the boot JSON, while the JS bundle is still loading. */
 const earlyHints = (env: Record<string, string>): Plugin => ({
   name: 'early-connection-hints',
-  transformIndexHtml() {
+  transformIndexHtml(_html, ctx) {
+    const cropPage = !ctx.path.endsWith('/matcha.html');
     const urls = [
       env.VITE_BASEMAP_URL,
       env.VITE_FIELDS_URL,
@@ -36,7 +38,7 @@ const earlyHints = (env: Record<string, string>): Plugin => ({
     const origins = new Set(urls.filter((u) => u && /^https?:\/\//.test(u)).map((u) => new URL(u).origin));
     return [
       ...[...origins].map((href) => ({ tag: 'link', attrs: { rel: 'preconnect', href, crossorigin: '' }, injectTo: 'head' as const })),
-      ...BOOT_FETCHES.map((href) => ({
+      ...(cropPage ? BOOT_FETCHES : MATCHA_BOOT_FETCHES).map((href) => ({
         tag: 'link',
         attrs: { rel: 'preload', href, as: 'fetch', crossorigin: '' },
         injectTo: 'head' as const,
@@ -71,6 +73,10 @@ const staticCacheHeaders = (): Plugin => {
 };
 
 export default defineConfig(({ mode }) => ({
-  build: { target: 'es2022', chunkSizeWarningLimit: 1500 },
+  build: {
+    target: 'es2022',
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: { input: { main: resolve(import.meta.dirname, 'index.html'), matcha: resolve(import.meta.dirname, 'matcha.html') } },
+  },
   plugins: [excludePmtilesFromDist(), earlyHints(loadEnv(mode, process.cwd(), 'VITE_')), staticCacheHeaders()],
 }));
