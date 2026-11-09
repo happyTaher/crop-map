@@ -59,6 +59,10 @@ To add a venue, update the typed data and include a source link and checked date
 
 ## Deployment
 
+GitHub Pages publishes the main app at `https://happytaher.github.io/crop-map/` on pushes to `main`. The Pages workflow runs the tests and builds with `VITE_BASE_PATH=/crop-map/` so scripts, fonts and navigation work under the repository path.
+
+The other SF matcha implementation already merged into the fork is preserved at `matcha.html`; its code lives in `site/src/alternate-matcha/` and its sourced data remains in `site/public/data/matcha.json`. It uses the same public basemap so it can run without crop tile archives.
+
 `npm run build` produces a static site in `site/dist/`. Deploy that folder to a static host. The existing Cloudflare workflow deploys only when the fork has its own `PAGES_PROJECT` repository variable and Cloudflare credentials. It uses the fork’s configured project; no deployment is performed just by building locally.
 
 For manual Cloudflare deployment, set `PAGES_PROJECT` to your own project before running `./deploy.sh`. Map tiles use the public OpenFreeMap service; no R2 crop archives or `TILES_BASE` configuration are needed.
