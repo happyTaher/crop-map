@@ -77,6 +77,10 @@ if (fit?.center) map.jumpTo({ center: fit.center, zoom: Math.max(MIN_ZOOM, fit.z
 map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 
+const POPUP_WIDTH = 300;
+/** Height kept free above a selected shop so its popup opens on screen. */
+const POPUP_ROOM = 260;
+
 const KIND_LABEL: Record<Kind, string> = { chain: 'Chain', boutique: 'Boutique' };
 const MENU_LABEL: Record<Menu, string> = { matcha: 'Matcha & sweets only', food: 'Serves food' };
 
@@ -129,7 +133,7 @@ function chip(label: string, className: string, on: boolean, toggle: (on: boolea
 }
 
 function mountApp(data: MatchaData): void {
-  const popup = new maplibregl.Popup({ closeButton: true, maxWidth: '300px', offset: 18, className: 'matcha-popup' });
+  const popup = new maplibregl.Popup({ closeButton: true, maxWidth: `${POPUP_WIDTH}px`, offset: 18, className: 'matcha-popup' });
   const filters: MatchaFilters = {
     kinds: new Set(ALL_FILTERS.kinds),
     menus: new Set(ALL_FILTERS.menus),
@@ -137,9 +141,27 @@ function mountApp(data: MatchaData): void {
     includeUnpriced: true,
   };
 
+  /** Moves the shop into the part of the map the panel doesn't cover, leaving room above it for the popup. */
   const open = (shop: MatchaShop, fly: boolean): void => {
-    popup.setLngLat([shop.lng, shop.lat]).setDOMContent(shopCard(shop, data.item)).addTo(map);
-    if (fly) map.flyTo({ center: [shop.lng, shop.lat], zoom: Math.max(map.getZoom(), 14.5) });
+    const center: [number, number] = [shop.lng, shop.lat];
+    const { clientWidth: w, clientHeight: h } = map.getContainer();
+    const rect = panel.getBoundingClientRect();
+    const collapsed = panel.classList.contains('is-collapsed');
+    const phone = window.innerWidth <= 720;
+    const free = {
+      top: POPUP_ROOM + (collapsed && !phone ? rect.bottom : 0),
+      left: (collapsed || phone ? 0 : rect.right) + 24,
+      right: 24,
+      bottom: (phone ? h - rect.top : 0) + 24,
+    };
+    const offset: [number, number] = [(free.left - free.right) / 2, (free.top - free.bottom) / 2];
+    const at = map.project(center);
+    const halfPopup = POPUP_WIDTH / 2;
+    const clear =
+      at.x > free.left + halfPopup && at.x < w - free.right - halfPopup && at.y > free.top && at.y < h - free.bottom;
+    if (fly) map.flyTo({ center, offset, zoom: Math.max(map.getZoom(), 14.5) });
+    else if (!clear) map.easeTo({ center, offset });
+    popup.setLngLat(center).setDOMContent(shopCard(shop, data.item)).addTo(map);
   };
 
   const markers = new Map<string, { marker: maplibregl.Marker; pin: HTMLButtonElement }>();
