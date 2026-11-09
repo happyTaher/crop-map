@@ -1,0 +1,338 @@
+.matcha-pin {
+  --pin: var(--leaf);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px 3px 4px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-pill);
+  background: var(--glass-strong);
+  box-shadow: var(--shadow-sm);
+  font: 700 12px/1 var(--font);
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.matcha-pin:hover,
+.matcha-pin:focus-visible {
+  z-index: 1000;
+  transform: scale(1.12);
+}
+
+.matcha-pin[hidden] {
+  display: none;
+}
+
+.is-chain {
+  --pin: var(--sky);
+}
+
+.matcha-pin__dot {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--pin);
+  box-shadow: 0 0 0 1px rgba(51, 54, 92, 0.18);
+}
+
+/* Square dot: also serves food. Round dot: matcha drinks and sweets only. */
+.is-food .matcha-pin__dot {
+  border-radius: 4px;
+}
+
+.matcha-panel {
+  position: absolute;
+  z-index: var(--z-map-ui);
+  top: var(--safe-top);
+  left: var(--edge);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(340px, calc(100vw - 2 * var(--edge)));
+  max-height: calc(100% - var(--safe-top) - var(--safe-bottom));
+  padding: 14px;
+  border-radius: var(--r-lg);
+}
+
+.matcha-panel__head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  column-gap: 8px;
+}
+
+.matcha-panel__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.matcha-panel__sub,
+.matcha-panel__count,
+.matcha-panel__legend {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.matcha-panel__sub {
+  grid-column: 1;
+}
+
+.matcha-panel__toggle {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: rgba(185, 168, 255, 0.18);
+  font: 600 12px var(--font);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.matcha-panel.is-collapsed > :not(.matcha-panel__head) {
+  display: none;
+}
+
+.matcha-panel__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.matcha-chip {
+  --pin: var(--ink-faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(120, 130, 200, 0.25);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.5);
+  font: 600 13px var(--font);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.matcha-chip::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pin);
+}
+
+.matcha-chip.is-boutique {
+  --pin: var(--leaf);
+}
+
+.matcha-chip.is-chain {
+  --pin: var(--sky);
+}
+
+.matcha-chip.is-food::before {
+  border-radius: 3px;
+}
+
+.matcha-chip.is-matcha::before,
+.matcha-chip.is-food::before {
+  background: none;
+  border: 2px solid var(--ink-soft);
+}
+
+.matcha-chip[aria-pressed='true'] {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.matcha-chip[aria-pressed='false'] {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.matcha-panel__price {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.matcha-panel__price input {
+  accent-color: #5fb84f;
+}
+
+.matcha-panel__price-label {
+  min-width: 92px;
+  text-align: right;
+  color: var(--ink-soft);
+}
+
+.matcha-panel__unpriced {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.matcha-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 -6px;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.matcha-row {
+  --pin: var(--leaf);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 6px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.matcha-row.is-chain {
+  --pin: var(--sky);
+}
+
+.matcha-row:hover,
+.matcha-row:focus-visible {
+  background: rgba(127, 217, 107, 0.16);
+}
+
+.matcha-row__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.matcha-row__name {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.matcha-row__meta {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.matcha-row__price {
+  font-size: 14px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.matcha-popup .maplibregl-popup-content {
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  background: var(--glass-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font);
+  color: var(--ink);
+}
+
+.matcha-popup .maplibregl-popup-close-button {
+  top: 6px;
+  right: 8px;
+  font-size: 18px;
+  color: var(--ink-soft);
+}
+
+.matcha-card > * {
+  margin: 0;
+}
+
+.matcha-card__name {
+  padding-right: 18px;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.matcha-card__where,
+.matcha-card__note {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.matcha-card__price {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.matcha-card__price strong {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.matcha-card__status {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c97a2b;
+}
+
+.matcha-card__status.is-confirmed {
+  color: #3f9a2f;
+}
+
+.matcha-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.matcha-tag {
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(127, 217, 107, 0.25);
+}
+
+.matcha-tag.is-chain {
+  background: rgba(124, 200, 255, 0.3);
+}
+
+.matcha-tag.is-matcha,
+.matcha-tag.is-food {
+  background: rgba(185, 168, 255, 0.22);
+}
+
+.matcha-card__source {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5b6bd6;
+}
+
+@media (max-width: 720px) {
+  .matcha-panel {
+    top: auto;
+    bottom: var(--safe-bottom);
+    max-height: 48%;
+  }
+}
