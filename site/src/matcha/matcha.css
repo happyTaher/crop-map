@@ -330,9 +330,16 @@
 }
 
 @media (max-width: 720px) {
+  /* The controls alone can fill a short phone's half-screen sheet, so the whole sheet scrolls instead of the list. */
   .matcha-panel {
     top: auto;
     bottom: var(--safe-bottom);
     max-height: 48%;
+    overflow-y: auto;
+  }
+
+  .matcha-list {
+    flex: none;
+    overflow-y: visible;
   }
 }
